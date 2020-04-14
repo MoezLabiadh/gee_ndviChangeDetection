@@ -1,5 +1,5 @@
 import ee
-from ee_plugin import Map
+from ee_plugin import Map #remove this if you are not running the script on the GEE QGIS plugin.
 
 # Define the Area of Interest
 AOI = ee.FeatureCollection("users/labiadhmoez/PerryRidge")
