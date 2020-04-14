@@ -1,3 +1,3 @@
 # gee_ndviChangeDetection
 
-This Google Earth Engine Script computes NDVI change layer based on Landsat 5 and 8 Time Series
+This Google Earth Engine Script calculates NDVI change based on Landsat 5 and 8 Time Series.
