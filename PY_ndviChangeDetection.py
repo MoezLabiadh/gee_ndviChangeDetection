@@ -1,5 +1,6 @@
 import ee
-from ee_plugin import Map #remove this if you are not running the script on the GEE QGIS plugin.
+from ee_plugin import Map  #remove this if you are not running the script on the GEE QGIS plugin.
+ee.Initialize()
 
 # Define the Area of Interest
 AOI = ee.FeatureCollection("users/labiadhmoez/PerryRidge")
@@ -26,7 +27,8 @@ def maskL8sr(image):
     cloudShadowBitMask = (1 << 3)
     cloudsBitMask = (1 << 5)
     qa = image.select('pixel_qa')
-    mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0) and(qa.bitwiseAnd(cloudsBitMask).eq(0))
+    mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0)\
+           and(qa.bitwiseAnd(cloudsBitMask).eq(0))
     return image.updateMask(mask)
     
 # Define NDVI indice function for Landsat-5 collection 
@@ -94,17 +96,17 @@ Map.addLayer(ndviAnomaly.clip(AOI), NdviAnomalyVizParam, 'ndviZscore')
 #Download the outputs
   ## OPTION 1: Download to Google Drive
 params = {
-    'description': 'ndvi_Change',
+    'description': 'ndviZscore_1990-2000_2018-2019_07-08',
     'scale': 30,
     'region': AOI.geometry().getInfo()['coordinates'] #get list of coordinates from AOI
   }
   
-task = ee.batch.Export.image.toDrive(ndviChange, **params)
+task = ee.batch.Export.image.toDrive(ndviAnomaly, **params)
 task.start()
-print ("Check your Google Drive for output. Upload might take a while"
+print ("Check your Google Drive for output. Upload might take a while")
 
-  ## OPTION 2: Download to Drive
-def downloader(ee_object,region): 
+  ## OPTION 2: Download to Local Drive. This will generate a Download Link
+def downloader(ee_object,region):
     try:
         #download image
         if isinstance(ee_object, ee.image.Image):
