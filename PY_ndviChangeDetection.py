@@ -1,5 +1,5 @@
 import ee
-from ee_plugin import Map  #remove this if you are not running the script on the GEE QGIS plugin.
+from ee_plugin import Map  #remove this if you are running the script outside of GEE QGIS plugin.
 ee.Initialize()
 
 # Define the Area of Interest
