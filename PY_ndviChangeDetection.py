@@ -79,11 +79,10 @@ aft_L8 = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR")\
            .filter(ee.Filter.calendarRange(7,8,'month'))\
            .filter(ee.Filter.lt('CLOUD_COVER', cloud_threshold))\
            .filterBounds(AOI)\
-           .map(L8_NDVI)\
-           .map(MaskL8sr)
+           .map(MaskL8sr)\
+           .map(L8_NDVI)
 
-
-#Get some information on the returned images: Nbr of images returned per Collection, acquisition date, bands....
+#Get information on the returned images: Nbr of images returned per Collection, acquisition date, bands....
 count_images_L8 = aft_L8.size()
 count_images_L5 = bef_L5.size()
 print("Your LANDSAT-8 query returned", count_images_L8.getInfo(), "images")
