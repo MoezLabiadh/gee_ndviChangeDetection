@@ -37,6 +37,15 @@ aft_end_date = '2019-12-31'
 # Define a cloud threshold
 cloud_threshold = 30
 
+# Define a cloud mask function for Landsat-8 collection
+def MaskL8sr(image):
+    cloudShadowBitMask = (1 << 3) # Create the Binary Cloud Shadow Mask by Left shifting value 1 to postion 3 and set all other Bits to 0.
+    cloudsBitMask = (1 << 5) # Create the Binary Cloud Mask by Left shifting value 1 to postion 3 and set all other Bits to 0.
+    qa = image.select('pixel_qa')
+    mask = qa.bitwiseAnd(cloudShadowBitMask))\
+           and(qa.bitwiseAnd(cloudsBitMask)) # Use the Bitwise AND operator to apply the Mask to the pixel_qa band
+    return image.updateMask(mask.Not())
+
 # Define a cloud mask function for Landsat-5 collection
 def MaskL5sr (image):
     qa = image.select('pixel_qa')
@@ -44,16 +53,7 @@ def MaskL5sr (image):
                                    or(qa.bitwiseAnd(1 << 3))
     maskEdge = image.mask().reduce(ee.Reducer.min())
     return image.updateMask(cloud.Not()).updateMask(maskEdge)
-    
-# Define a cloud mask function for Landsat-8 collection
-def MaskL8sr(image):
-    cloudShadowBitMask = (1 << 3) # Create the Binary Cloud Shadow Mask by Left shifting value 1 to postion 3 and set all other Bits to 0.
-    cloudsBitMask = (1 << 5) # Create the Binary Cloud Mask by Left shifting value 1 to postion 3 and set all other Bits to 0.
-    qa = image.select('pixel_qa')
-    mask = qa.bitwiseAnd(cloudShadowBitMask).eq(0)\
-           and(qa.bitwiseAnd(cloudsBitMask).eq(0)) # Use the Bitwise AND operator to apply the Mask to the pixel_qa band
-    return image.updateMask(mask)
-    
+      
 # Define NDVI indice function for Landsat-5 collection 
 def L5_NDVI (image):
     l5_ndvi = image.normalizedDifference(['B4', 'B3']).rename('L5_NDVI')
@@ -114,7 +114,6 @@ ndviAnomaly = ((aft_mean_NDVI.subtract(bef_mean_NDVI))\
                  .rename ('ndviZscore')\
                  .clip(AOI)
 
-
 # Set visualisation parameters
 NdviChangeVizParam = {
   "min": -50,
@@ -145,7 +144,7 @@ task = ee.batch.Export.image.toDrive(ndviAnomaly, **params)
 task.start()
 
 print ("Check your Google Drive for output. Upload might take a while")
- ''' 
+''' 
  
   ## OPTION 2: Download to Local Drive. This will generate a Download Link
 def downloader(ee_object,region):
