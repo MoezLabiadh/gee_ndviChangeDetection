@@ -6,7 +6,7 @@ Note that: Landsat-5 imagery is available from March 1984 to May 2012.
            Landsat-8 imagery is available from April 2013 to Present.
            
 Author: Moez Labiadh
-Last updated on May, 1, 2020.
+Last updated on May 1, 2020.
 
 '''
 
